@@ -1,6 +1,6 @@
 # Restaurant BI Platform — Backend
 
-> FastAPI · PostgreSQL · Redis · Celery · Bubble Intelligence
+> FastAPI · Firestore · Redis · Celery · Bubble Intelligence
 
 ---
 
@@ -9,8 +9,8 @@
 | Layer | Tech |
 |-------|------|
 | API | FastAPI + Uvicorn |
-| ORM | SQLAlchemy 2 (async) |
-| DB | PostgreSQL 16 |
+| Persistence | Google Cloud Firestore |
+| DB | Firebase / Firestore |
 | Cache | Redis 7 |
 | Tasks | Celery + Celery Beat |
 | ML/BI | scikit-learn · XGBoost · SHAP |
@@ -47,9 +47,14 @@ python -m venv venv
 source venv/bin/activate   # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 
-# Start PostgreSQL and Redis first, then:
+# Configure Firebase/Firestore credentials and start Redis first, then:
 uvicorn app.main:app --reload --port 8000
 ```
+
+Firestore uses `VITE_FIREBASE_PROJECT_ID` for the project and
+`GOOGLE_APPLICATION_CREDENTIALS` for the service account JSON path. If no
+Google credentials are available, the app falls back to an in-memory repository
+for local tests.
 
 ---
 

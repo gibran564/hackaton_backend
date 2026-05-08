@@ -1,0 +1,27 @@
+# .gitignore
+cat > .gitignore << 'EOF'
+# Credenciales — NUNCA subir
+secrets/
+*.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.python-version
+
+# Tests / Coverage
+.coverage
+.pytest_cache/
+htmlcov/
+
+# Entorno
+.env
+.venv/
+venv/
+
+# Build
+*.rar
+*.zip
+celerybeat-schedule
+EOF
