@@ -31,7 +31,13 @@ class RespuestaToken(BaseModel):
 class SolicitudRefresco(BaseModel):
     """Token de refresco para obtener un nuevo token de acceso."""
     refresh_token: str
-
+    
+class SolicitudGoogleAuth(BaseModel):
+    """Firebase ID token obtenido del flujo Google OAuth en el frontend."""
+    id_token: str
+class SolicitudGoogleAuth(BaseModel):
+    """Firebase ID token obtenido del flujo Google OAuth en el frontend."""
+    id_token: str
 
 class CrearUsuario(BaseModel):
     """Datos requeridos para registrar un nuevo usuario en el sistema."""
@@ -277,11 +283,22 @@ class SolicitudAnaliticos(BaseModel):
     date_to: Optional[datetime] = None
 
 
+class SalidaBurbujaIndividual(BaseModel):
+    """Resultado serializable de una sola burbuja para el frontend."""
+    bubble_id: str
+    bubble_name: str
+    score: float
+    confidence: float
+    feature_importances: dict
+
+
 class SalidaInsightBubble(BaseModel):
     """Resultado consolidado del análisis Bubble Intelligence."""
     occupancy_prediction: float
     dominant_factor: str
     uncertainty: float
-    bubble_scores: dict
+    bubble_scores: dict                # {etiqueta: score}
+    bubble_details: list               # List[SalidaBurbujaIndividual] — serializado
     shap_summary: dict
-    recommendations: List[str]
+    recommendations: list
+    context_snapshot: dict             # Subconjunto del contexto para debug en el frontend
