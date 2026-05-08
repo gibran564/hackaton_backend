@@ -55,6 +55,20 @@ class EstadoOrden(str, enum.Enum):
     cancelada = "cancelled"
 
 
+class NivelPrecio(str, enum.Enum):
+    economico = "$"
+    moderado  = "$$"
+    caro      = "$$$"
+    muy_caro  = "$$$$"
+
+
+class CategoriaRestaurante(str, enum.Enum):
+    mexicana        = "Mexicana"
+    mariscos_carnes = "Mariscos & Carnes"
+    internacional   = "Internacional"
+    vegetal_cafe    = "Vegetal & Café"
+
+
 @dataclass
 class Usuario:
     email: str
@@ -73,17 +87,48 @@ class Usuario:
 
 @dataclass
 class Restaurante:
-    name: str
-    address: Optional[str] = None
-    phone: Optional[str] = None
-    email: Optional[str] = None
-    description: Optional[str] = None
-    opening_time: str = "08:00"
-    closing_time: str = "22:00"
-    max_capacity: int = 100
-    is_active: bool = True
-    id: str = field(default_factory=generar_uuid)
+    # ── Identidad ──────────────────────────────────────────
+    name:      str
+    tipo:      str
+    categoria: CategoriaRestaurante
+    ubicacion: str
+    precio:    NivelPrecio
+
+    # ── Operación ──────────────────────────────────────────
+    address:      Optional[str] = None
+    phone:        Optional[str] = None
+    email:        Optional[str] = None
+    description:  Optional[str] = None
+    opening_time: str  = "08:00"
+    closing_time:  str = "22:00"
+    max_capacity:  int = 100
+    is_active:    bool = True
+
+    # ── Métricas y presentación ────────────────────────────
+    calificacion:         float     = 0.0
+    porcentaje_ocupacion: int       = 0
+    total_reseñas:        int       = 0
+    reservas_hoy:         int       = 0
+    imagen_url:           Optional[str]  = None
+    galeria:              list[str] = field(default_factory=list)
+    etiquetas:            list[str] = field(default_factory=list)
+    horario:              Optional[str]  = None
+
+    # ── Metadatos ──────────────────────────────────────────
+    id:         str      = field(default_factory=generar_uuid)
     created_at: datetime = field(default_factory=_ahora)
+
+    def __post_init__(self) -> None:
+        self.categoria = _enum(self.categoria, CategoriaRestaurante)
+        self.precio    = _enum(self.precio, NivelPrecio)
+
+    @property
+    def etiqueta_ocupacion(self) -> str:
+        p = self.porcentaje_ocupacion
+        if p >= 90:   estado = "Lleno"
+        elif p >= 50: estado = "Ocupado"
+        else:         estado = "Disponible"
+        return f"{p}% · {estado}"
 
 
 @dataclass
